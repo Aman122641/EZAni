@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>English HTML Page</title>
+    <title>EZAni</title>
     <style>
         /* Add CSS for the background and overall design */
         body {
@@ -65,11 +65,11 @@
         }
 
         .loading-text {
-            font-size: 20px;
+            font-size: 35px;
             color: #fff;
             display: none; /* Hide the loading text by default */
             text-align: center; /* Center align the loading text */
-            margin-top: 20px; /* Add some top margin for spacing */
+            margin-top: 40px; /* Add some top margin for spacing */
         }
 
         .next-episode-button {
@@ -88,12 +88,12 @@
 </head>
 <body>
     <div class="header">
-        <h1>Welcome to the English HTML Page</h1>
+        <h1>EZAni</h1>
     </div>
     
     <div class="button-container">
         <button class="button" onclick="fetchVideoData('Server 1')">Server 1</button>
-        <button class="button" onclick="fetchVideoData('Server 2')">Server 2</button>
+        <button class "button" onclick="fetchVideoData('Server 2')">Server 2</button>
     </div>
 
     <div id="response" style="text-align: center;"></div>
@@ -185,7 +185,13 @@
                 videoPlayer.play();
                 videoPlayer.requestFullscreen();
                 var videoIframe = document.getElementById('videoIframe');
-                videoIframe.style.display = 'block';
+                videoIframe.style.display = 'block'; // Show the video player
+            } else {
+                // Pause and hide the video player
+                videoPlayer.pause();
+                videoPlayer.exitFullscreen();
+                var videoIframe = document.getElementById('videoIframe');
+                videoIframe.style.display = 'none'; // Hide the video player
             }
         }
 
