@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Math Page</title>
+    <style>
+        /* Add CSS for the background and overall design */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0073e6, #00c6ff);
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        /* Add CSS for the search bar */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Box shadow for container */
+            margin: 20px;
+            text-align: center;
+        }
+
+        .search-bar input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background: #00c6ff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Add CSS for the JSON response section */
+        .json-response {
+            margin: 20px;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Box shadow for container */
+        }
+
+        .json-text {
+            white-space: pre-wrap; /* Allow text to wrap and maintain formatting */
+        }
+    </style>
+</head>
+<body>
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for something">
+        <button onclick="fetchJSON()">Search</button>
+    </div>
+    <div class="json-response" id="response">
+        <!-- JSON response will be displayed here -->
+    </div>
+
+    <script>
+        function fetchJSON() {
+            var search = document.getElementById('searchInput').value;
+            var responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Fetching data...';
+
+            // Replace 'https://gogoanime-api-1.hop.sh/anime-details/{id}' with the actual URL
+            var url = 'https://gogoanime-api-1.hop.sh/anime-details/' + search;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Display the JSON response with proper formatting
+                    responseDiv.innerHTML = '<pre class="json-text">' + JSON.stringify(data, null, 2) + '</pre>';
+                })
+                .catch(error => {
+                    responseDiv.innerHTML = 'Error fetching JSON: ' + error;
+                });
+        }
+    </script>
+</body>
+</html>
