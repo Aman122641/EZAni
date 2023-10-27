@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>English HTML Page</title>
+    <style>
+        /* Add CSS for the background and overall design */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0073e6, #00c6ff);
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .button-container {
+            text-align: center; /* Center-align the buttons */
+            margin-top: 20px;
+        }
+
+        .button {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px; /* Larger padding for bigger buttons */
+            margin: 0 20px; /* More margin for larger buttons */
+            cursor: pointer;
+            font-size: 20px; /* Larger font size for button text */
+        }
+
+        .subserver-dropdown {
+            text-align: center;
+            margin-top: 20px;
+            display: none; /* Hide the subserver dropdown by default */
+        }
+
+        .subserver-select {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            margin: 0 20px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .video-iframe {
+            text-align: center;
+            margin-top: 20px;
+            display: none; /* Hide the video iframe by default */
+            background: rgba(0, 0, 0, 0.5); /* Add background color for visibility */
+        }
+
+        .video-player {
+            margin: 0 auto; /* Center align the video player */
+            background: transparent; /* Set background to transparent */
+        }
+
+        .loading-text {
+            font-size: 20px;
+            color: #fff;
+            display: none; /* Hide the loading text by default */
+            text-align: center; /* Center align the loading text */
+            margin-top: 20px; /* Add some top margin for spacing */
+        }
+
+        .next-episode-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to the English HTML Page</h1>
+    </div>
+    
+    <div class="button-container">
+        <button class="button" onclick="fetchVideoData('Server 1')">Server 1</button>
+        <button class="button" onclick="fetchVideoData('Server 2')">Server 2</button>
+    </div>
+
+    <div id="response" style="text-align: center;"></div>
+    
+    <div class="subserver-dropdown" id="subserverDropdown">
+        <select class="subserver-select" id="subserverSelect" onchange="showVideo()">
+            <option value="">Select Subserver</option>
+        </select>
+    </div>
+    
+    <div class="loading-text" id="loadingText">Loading...</div>
+
+    <div class="video-iframe" id="videoIframe">
+        <video id="videoPlayer" class="video-js vjs-default-skin video-player" controls preload="auto" width="560" height="480"></video>
+    </div>
+
+    <!-- Include video.js library -->
+    <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
+    <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+
+    <button class="next-episode-button" onclick="nextEpisode()">Next Episode</button>
+
+    <script>
+        function fetchVideoData(server) {
+            // ... (Your existing fetchVideoData function)
+        }
+
+        function showVideo() {
+            // ... (Your existing showVideo function)
+        }
+
+        function nextEpisode() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var episode = urlParams.get('episode');
+            if (episode) {
+                // Extract the current episode number
+                const match = episode.match(/(\d+)$/);
+                if (match) {
+                    const currentEpisodeNumber = parseInt(match[1]);
+                    const nextEpisodeNumber = currentEpisodeNumber + 1;
+                    // Construct the new URL
+                    const newEpisode = episode.replace(/\d+$/, nextEpisodeNumber);
+                    // Redirect to the new episode
+                    window.location.href = `index.html?episode=${newEpisode}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
