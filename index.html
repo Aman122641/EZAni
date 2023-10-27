@@ -91,7 +91,7 @@
         function fetchJSON() {
             var search = document.getElementById('searchInput').value;
             var url = `https://gogoanime-api-1.hop.sh/search?keyw=${search}`;
-            var baseUrl = 'https://example.com/math/index.html';
+            var baseUrl = '/math/index.html';
 
             fetch(url)
                 .then(response => response.json())
