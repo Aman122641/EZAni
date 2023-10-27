@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Website</title>
+    <title>EZAni</title>
     <style>
         body {
             margin: 0;
@@ -17,6 +17,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
         }
 
         h1 {
@@ -36,16 +37,15 @@
             padding: 10px;
             border: none;
             background: rgba(255, 255, 255, 0.2);
-            color: #333; /* Change text color */
+            color: #333;
             border-radius: 5px;
-            appearance: none; /* Remove default select arrow */
-            -webkit-appearance: none; /* Remove default select arrow for Safari */
-            -moz-appearance: none; /* Remove default select arrow for Firefox */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
 
-        /* Add custom arrow icon to the select */
         .dropdown:after {
-            content: "\25BC"; /* Unicode down arrow character */
+            content: "\25BC";
             position: absolute;
             top: 50%;
             right: 10px;
@@ -53,7 +53,7 @@
         }
 
         .dropdown select:hover {
-            background: rgba(255, 255, 255, 0.3); /* Change background on hover */
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .video-container {
@@ -77,15 +77,27 @@
         h2 {
             font-size: 20px;
         }
+
+        /* Next Episode Button */
+        .next-episode-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #0073e6;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Your Website</h1>
+        <h1 id="pageTitle">Your Website</h1>
         <div class="dropdown">
             <select id="dropdownSelect" onchange="showVideo()">
-                <option value="">Select a video quality</option> <!-- Default option -->
-                <!-- Options will be added dynamically here -->
+                <option value="">Select a video quality</option>
             </select>
         </div>
 
@@ -96,6 +108,9 @@
         </div>
     </div>
 
+    <!-- Next Episode Button -->
+    <button class="next-episode-button" onclick="nextEpisode()">Next Episode</button>
+
     <!-- Include the Video.js library -->
     <link href="https://vjs.zencdn.net/7.17.0/video-js.css" rel="stylesheet">
     <script src="https://vjs.zencdn.net/7.17.0/video.js"></script>
@@ -105,46 +120,61 @@
             const videoIframe = document.getElementById('videoIframe');
             const dropdownSelect = document.getElementById("dropdownSelect");
             const selectedOption = dropdownSelect.options[dropdownSelect.selectedIndex];
-            const videoPlayer = videojs('videoPlayer'); // Create a Video.js instance
+            const videoPlayer = videojs('videoPlayer');
 
             if (selectedOption.value) {
-                // Load and play the video
                 videoPlayer.src({
                     src: selectedOption.value,
                     type: 'application/x-mpegURL',
                 });
                 videoPlayer.play();
             } else {
-                // Pause and hide the video player
                 videoPlayer.pause();
                 videoPlayer.exitFullscreen();
             }
         }
 
+        function nextEpisode() {
+            // Get the current episode parameter from the URL
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            let episode = urlParams.get("episode");
+
+            // Extract the episode number (assuming it's at the end of the string)
+            const episodeNumber = episode.match(/\d+$/);
+
+            if (episodeNumber) {
+                // Increment the episode number
+                episodeNumber[0] = String(Number(episodeNumber[0]) + 1);
+
+                // Replace the old episode number with the new one
+                episode = episode.replace(/\d+$/, episodeNumber[0]);
+
+                // Update the URL and refresh the page
+                window.location.href = `index.html?episode=${episode}`;
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
-            // Get the episode parameter from the URL
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const episode = urlParams.get("episode");
 
             if (episode) {
-                // Make a GET request to the API with the episode variable
                 const apiUrl = `https://api.consumet.org/anime/gogoanime/watch/${episode}`;
 
                 fetch(apiUrl)
                     .then((response) => response.json())
                     .then((data) => {
-                        // Handle the JSON response here
-                        console.log(data);
-
-                        // Find the dropdown select element
                         const dropdownSelect = document.getElementById("dropdownSelect");
+                        const pageTitle = document.getElementById("pageTitle");
 
-                        // Loop through the "sources" in the response to create dropdown options
+                        pageTitle.textContent = episode.replace(/-/g, ' ');
+
                         if (data.sources && data.sources.length > 0) {
                             data.sources.forEach(function (source) {
                                 const option = document.createElement("option");
-                                option.value = source.url; // Set the value to the URL
+                                option.value = source.url;
                                 option.text = source.quality;
                                 dropdownSelect.appendChild(option);
                             });
