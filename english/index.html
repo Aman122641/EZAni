@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Website</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0073e6, #00c6ff);
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .dropdown {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333; /* Change text color */
+            border-radius: 5px;
+            appearance: none; /* Remove default select arrow */
+            -webkit-appearance: none; /* Remove default select arrow for Safari */
+            -moz-appearance: none; /* Remove default select arrow for Firefox */
+        }
+
+        /* Add custom arrow icon to the select */
+        .dropdown:after {
+            content: "\25BC"; /* Unicode down arrow character */
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        .dropdown select:hover {
+            background: rgba(255, 255, 255, 0.3); /* Change background on hover */
+        }
+
+        .video-container {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .video-iframe {
+            text-align: center;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .video-player {
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Website</h1>
+        <div class="dropdown">
+            <select id="dropdownSelect" onchange="showVideo()">
+                <option value="">Select a video quality</option> <!-- Default option -->
+                <!-- Options will be added dynamically here -->
+            </select>
+        </div>
+
+        <div class="video-container">
+            <div class="video-iframe" id="videoIframe">
+                <video id="videoPlayer" class="video-js vjs-default-skin video-player" data-setup='{}' controls preload="auto" width="560" height="480"></video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the Video.js library -->
+    <link href="https://vjs.zencdn.net/7.17.0/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.17.0/video.js"></script>
+
+    <script>
+        function showVideo() {
+            const videoIframe = document.getElementById('videoIframe');
+            const dropdownSelect = document.getElementById("dropdownSelect");
+            const selectedOption = dropdownSelect.options[dropdownSelect.selectedIndex];
+            const videoPlayer = videojs('videoPlayer'); // Create a Video.js instance
+
+            if (selectedOption.value) {
+                // Load and play the video
+                videoPlayer.src({
+                    src: selectedOption.value,
+                    type: 'application/x-mpegURL',
+                });
+                videoPlayer.play();
+            } else {
+                // Pause and hide the video player
+                videoPlayer.pause();
+                videoPlayer.exitFullscreen();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the episode parameter from the URL
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const episode = urlParams.get("episode");
+
+            if (episode) {
+                // Make a GET request to the API with the episode variable
+                const apiUrl = `https://api.consumet.org/anime/gogoanime/watch/${episode}`;
+
+                fetch(apiUrl)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Handle the JSON response here
+                        console.log(data);
+
+                        // Find the dropdown select element
+                        const dropdownSelect = document.getElementById("dropdownSelect");
+
+                        // Loop through the "sources" in the response to create dropdown options
+                        if (data.sources && data.sources.length > 0) {
+                            data.sources.forEach(function (source) {
+                                const option = document.createElement("option");
+                                option.value = source.url; // Set the value to the URL
+                                option.text = source.quality;
+                                dropdownSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching data:", error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
