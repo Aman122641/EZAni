@@ -89,7 +89,8 @@
 </head>
 <body>
     <div class="header">
-        <h1>EZAni</h1>
+	<h1>EZAni</h1>
+        <h1 id="episodeTitle">EZAni</h1>
     </div>
     
     <div class="button-container">
@@ -210,6 +211,20 @@
                 }
             }
         }
+
+        // Function to replace hyphens with spaces in the episode title
+        function displayEpisodeTitle() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var episode = urlParams.get('episode');
+            if (episode) {
+                var episodeTitle = episode.replace(/-/g, ' '); // Replace hyphens with spaces
+                var episodeTitleElement = document.getElementById('episodeTitle');
+                episodeTitleElement.textContent = episodeTitle;
+            }
+        }
+
+        // Call the function to display the episode title when the page loads
+        displayEpisodeTitle();
     </script>
 </body>
 </html>
