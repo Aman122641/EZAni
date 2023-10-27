@@ -118,11 +118,75 @@
 
     <script>
         function fetchVideoData(server) {
-            // ... (Your existing fetchVideoData function)
+            var urlParams = new URLSearchParams(window.location.search);
+            var episode = urlParams.get('episode');
+            var url = "";
+
+            if (server === 'Server 1') {
+                url = `https://gogoanime-api-1.hop.sh/vidcdn/watch/${episode}`;
+            } else if (server === 'Server 2') {
+                url = `https://api.consumet.org/anime/gogoanime/watch/${episode}`;
+            }
+
+            if (url) {
+                // Hide the subserver dropdown and show loading text
+                var subserverDropdown = document.getElementById('subserverDropdown');
+                subserverDropdown.style.display = 'none';
+                var loadingText = document.getElementById('loadingText');
+                loadingText.style.display = 'block';
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        var subserverSelect = document.getElementById('subserverSelect');
+                        subserverSelect.innerHTML = ''; // Clear previous options
+                        subserverSelect.options.add(new Option('Select Subserver', ''));
+
+                        // Create options for each "file" variable
+                        let subserverIndex = 1; // Initialize the index for subservers
+                        if (data.sources && data.sources.length > 0) {
+                            data.sources.forEach(function (source) {
+                                const subserverName = source.quality || `Subserver ${subserverIndex}`;
+                                subserverSelect.options.add(new Option(subserverName, source.file));
+                                subserverIndex++; // Increment the index
+                            });
+                        }
+
+                        if (data.sources_bk && data.sources_bk.length > 0) {
+                            data.sources_bk.forEach(function (source) {
+                                const subserverName = source.quality || `Subserver ${subserverIndex}`;
+                                subserverSelect.options.add(new Option(subserverName, source.file));
+                                subserverIndex++; // Increment the index
+                            });
+                        }
+
+                        // Show the subserver dropdown and hide loading text
+                        subserverDropdown.style display = 'block';
+                        loadingText.style.display = 'none';
+                    })
+                    .catch(error => {
+                        var responseDiv = document.getElementById('response');
+                        responseDiv.innerHTML = 'Error fetching JSON: ' + error;
+                    });
+            }
         }
 
         function showVideo() {
-            // ... (Your existing showVideo function)
+            var subserverSelect = document.getElementById('subserverSelect');
+            var videoPlayer = videojs('videoPlayer');
+            var selectedOption = subserverSelect.options[subserverSelect.selectedIndex];
+
+            if (selectedOption.value) {
+                // Load and play the video
+                videoPlayer.src({
+                    src: selectedOption.value,
+                    type: 'application/x-mpegURL',
+                });
+                videoPlayer.play();
+                videoPlayer.requestFullscreen();
+                var videoIframe = document.getElementById('videoIframe');
+                videoIframe.style.display = 'block';
+            }
         }
 
         function nextEpisode() {
