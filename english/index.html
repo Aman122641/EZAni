@@ -35,6 +35,20 @@
             font-size: 20px; /* Larger font size for button text */
         }
 
+        .next-episode-button {
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 30px;
+            margin: 20px; /* Add margin for spacing */
+            cursor: pointer;
+            font-size: 20px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
         .subserver-dropdown {
             text-align: center;
             margin-top: 20px;
@@ -71,19 +85,6 @@
             text-align: center; /* Center align the loading text */
             margin-top: 40px; /* Add some top margin for spacing */
         }
-
-        .next-episode-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 15px 30px;
-            cursor: pointer;
-            font-size: 20px;
-        }
     </style>
 </head>
 <body>
@@ -110,11 +111,11 @@
         <video id="videoPlayer" class="video-js vjs-default-skin video-player" controls preload="auto" width="560" height="480"></video>
     </div>
 
+    <button class="next-episode-button" onclick="nextEpisode()">Next Episode</button>
+
     <!-- Include video.js library -->
     <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
     <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
-
-    <button class="next-episode-button" onclick="nextEpisode()">Next Episode</button>
 
     <script>
         function fetchVideoData(server) {
@@ -161,7 +162,7 @@
                         }
 
                         // Show the subserver dropdown and hide loading text
-                        subserverDropdown.style display = 'block';
+                        subserverDropdown.style.display = 'block';
                         loadingText.style.display = 'none';
                     })
                     .catch(error => {
@@ -197,17 +198,15 @@
 
         function nextEpisode() {
             var urlParams = new URLSearchParams(window.location.search);
-            var episode = urlParams.get('episode');
-            if (episode) {
-                // Extract the current episode number
-                const match = episode.match(/(\d+)$/);
+            var currentEpisode = urlParams.get('episode');
+
+            if (currentEpisode) {
+                // Extract the episode number
+                var match = /episode-(\d+)/.exec(currentEpisode);
                 if (match) {
-                    const currentEpisodeNumber = parseInt(match[1]);
-                    const nextEpisodeNumber = currentEpisodeNumber + 1;
-                    // Construct the new URL
-                    const newEpisode = episode.replace(/\d+$/, nextEpisodeNumber);
-                    // Redirect to the new episode
-                    window.location.href = `index.html?episode=${newEpisode}`;
+                    var episodeNumber = parseInt(match[1]);
+                    var nextEpisode = currentEpisode.replace(`episode-${episodeNumber}`, `episode-${episodeNumber + 1}`);
+                    window.location.href = `index.html?episode=${nextEpisode}`;
                 }
             }
         }
